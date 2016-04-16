@@ -1,0 +1,247 @@
+---
+title: "White Whine Quality Data Analysis"
+author: "jmonterrubio"
+date: "12 de abril de 2016"
+output: html_document
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(dplyr)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+wines <- read.csv(file = "wineQualityWhites.csv")
+# Remove first column (row number)
+wines$X <- NULL 
+```
+
+# Univariate Plots Section
+```{r echo=FALSE, Summary}
+dim(wines)
+names(wines)
+str(wines)
+summary(wines)
+```
+
+The percentage of alcohol in wine bounds from 8 and 14.20 percent.
+About 75% of the wines have a residual sugar value below 10 grams/liter (over 45 are considered sweet).
+Some wines have not citric acid.
+Mean quality is 5.878, max and min quality are 9 and 3 respectively.
+
+
+```{r echo=FALSE, Quality}
+qplot(quality, data = wines, binwidth = 1) +
+  scale_x_continuous(breaks = seq(3, 9, 1))
+```
+
+Quality distribution appears unimodal normal distribution with center in 6.
+
+```{r echo=FALSE, Alcohol}
+qplot(alcohol, data = wines)
+qplot(alcohol, data = wines, binwidth = 0.1) +
+  scale_x_continuous(breaks = seq(8, 15, 0.5))
+
+summary(wines$alcohol)
+```
+
+Most alcohol values are around 9.5 grades, and follow a right skewed normal distribution.
+
+```{r echo=FALSE, Sulphates}
+qplot(sulphates, data = wines)
+qplot(sulphates, data = wines, binwidth = 0.01) +
+  scale_x_continuous(breaks = seq(0.2, 1.1, 0.1))
+
+summary(wines$sulphates)
+```
+
+Most sulphates values are around 0.45 grades, and follow a right skewed normal distribution.
+
+```{r echo=FALSE, pH}
+qplot(pH, data = wines)
+qplot(pH, data = wines, binwidth = 0.02) +
+  scale_x_continuous(breaks = seq(2.7, 3.9, 0.1))
+
+summary(wines$pH)
+```
+
+pH follow a normal distribution with mean near 3.2
+
+```{r echo=FALSE, Density}
+qplot(density, data = wines)
+qplot(density, data = wines, binwidth = 0.0005) +
+  scale_x_continuous(breaks = seq(0.98, 1.04, 0.01))
+
+summary(wines$density)
+```
+
+Density follow a normal distribution with mean in 0.994 and some outliers over 1.01
+
+```{r echo=FALSE, Total_sulfur_dioxide}
+qplot(total.sulfur.dioxide, data = wines)
+qplot(total.sulfur.dioxide, data = wines, binwidth = 5)
+
+summary(wines$total.sulfur.dioxide)
+```
+
+The total sulfur dioxide follow a normal distribution with mean in 138.4 and some outliers over 300. The 50% if the data is between 108 and 167
+
+```{r echo=FALSE, Free_sulfur_dioxide}
+qplot(free.sulfur.dioxide, data = wines)
+qplot(free.sulfur.dioxide, data = wines, binwidth = 1) +
+  scale_x_continuous(breaks = seq(0, 290, 10))
+
+summary(wines$free.sulfur.dioxide)
+```
+
+The free sulfur dioxide follow a normal distribution with mean near 35 and some outliers over 90. The 50% if the data is between 23 and 46
+
+```{r echo=FALSE, Chlorides}
+qplot(chlorides, data = wines)
+qplot(chlorides, data = wines, binwidth = 0.02) +
+  scale_x_log10(breaks = c(0.01, 0.015, 0.02, 0.03, 0.05, 0.1, 0.2))
+
+summary(wines$chlorides)
+
+```
+
+Almost 50% of chlorides are between 0.036 and 0.05.
+
+```{r echo=FALSE, Residual_sugar}
+qplot(residual.sugar, data = wines)
+qplot(residual.sugar, data = wines, binwidth = 0.02) +
+  scale_x_log10(breaks = c(1, 2, 5, 10, 20))
+
+```
+
+Transformed the long tail data to better understand the distribution of residual sugar. The tranformed residual sugar distribution appears bimodal with the price peaking around 1.5 or so and again at 10 or so. This is one interesting plot.
+
+Based on the context of this feature, it's a good candidate to transform it in a new factorized variable. The description says that it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet so our new variable could be:
+
+```{r echo=FALSE, Sugar_taste}
+wines <- mutate(wines,
+         sugar.taste = ifelse(residual.sugar < 1, 'RARE',
+                       ifelse(residual.sugar > 45, 'SWEET', 'NORMAL')))
+```
+
+```{r echo=FALSE, Citric_acid}
+qplot(citric.acid, data = wines)
+qplot(citric.acid, data = wines, binwidth = 0.05) +
+  scale_x_continuous(breaks = seq(0, 1.7, 0.1))
+
+summary(wines$citric.acid)
+```
+
+The citric acid follow a normal distribution with mean near 0.33 and some outliers over 0.9. The 50% if the data is between 0.27 and 0.39
+
+```{r echo=FALSE, Volatile_acidity}
+qplot(volatile.acidity, data = wines)
+qplot(volatile.acidity, data = wines, binwidth = 0.01) +
+  scale_x_log10(breaks = seq(0, 1.1, 0.1))
+
+```
+
+Transformed the long tail data to better understand the distribution of volatile acidity. The tranformed volatile acidity distribution appears normal with the acifuty peaking around 0.25
+
+```{r echo=FALSE, Fixed_acidity}
+qplot(fixed.acidity, data = wines)
+qplot(fixed.acidity, data = wines, binwidth = 0.1)
+
+summary(wines$fixed.acidity)
+```
+
+The fixed acidity follow a normal distribution with mean near 6.85 and some outliers over 10. The 50% if the data is between 6.3 and 7.3
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+
+There are 4898 wines in the dataset with 12 features (fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol and quality).
+
+All the features are numerical, even the quality that is based on a score of 0 to 10. This feature is the easiest one to be factorized for an easy plot interpretations but the range and the nature of the data seems that is not going to be necessary to factorize.
+
+Main thoughts:
+
+Seeing the univariate plots, most of the features follow normal distributions with few variability but some outliers. It's going to be interesting how these outliers have influence in the quality of the wines.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The main feature in the data set is the quality. The main idea is try to predict the quality of a wine. To accomplish this issue let see what is the behaviour of the quality with some other features. 
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+
+
+
+# Bivariate Plots Section
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection
