@@ -1,5 +1,5 @@
 ---
-title: "White Whine Quality Data Analysis"
+title: "White Wine Quality Data Analysis"
 author: "jmonterrubio"
 date: "12 de abril de 2016"
 output: html_document
@@ -68,7 +68,7 @@ Most sulphates values are around 0.45 grades, and follow a right skewed normal d
 
 ```{r echo=FALSE, pH}
 qplot(pH, data = wines)
-qplot(pH, data = wines, binwidth = 0.02) +
+qplot(pH, data = wines, binwidth = 0.01) +
   scale_x_continuous(breaks = seq(2.7, 3.9, 0.1))
 
 summary(wines$pH)
@@ -131,23 +131,32 @@ Based on the context of this feature, it's a good candidate to transform it in a
 wines <- mutate(wines,
          sugar.taste = ifelse(residual.sugar < 1, 'RARE',
                        ifelse(residual.sugar > 45, 'SWEET', 'NORMAL')))
+wines$sugar.taste <- ordered(wines$sugar.taste, levels = c('RARE', 'NORMAL', 'SWEET'))
+summary(wines$sugar.taste)
 ```
+
+Sadly there aren't enought cases in SWEET and RARE to consider this feature.
 
 ```{r echo=FALSE, Citric_acid}
 qplot(citric.acid, data = wines)
-qplot(citric.acid, data = wines, binwidth = 0.05) +
+qplot(citric.acid, data = wines, binwidth = 0.01) +
   scale_x_continuous(breaks = seq(0, 1.7, 0.1))
 
 summary(wines$citric.acid)
 ```
 
-The citric acid follow a normal distribution with mean near 0.33 and some outliers over 0.9. The 50% if the data is between 0.27 and 0.39
+The citric acid follow a normal distribution with mean near 0.33 and some outliers over 0.9. The 50% if the data is between 0.27 and 0.39.
+
+Setting the binwidth to 0.01 we can see an anormal amount of values around 0.5 (0.49 exactly).
+
+```{r echo=FALSE, Citric_acid_table}
+sort(table(wines$citric.acid), decreasing = T)
+```
 
 ```{r echo=FALSE, Volatile_acidity}
 qplot(volatile.acidity, data = wines)
 qplot(volatile.acidity, data = wines, binwidth = 0.01) +
   scale_x_log10(breaks = seq(0, 1.1, 0.1))
-
 ```
 
 Transformed the long tail data to better understand the distribution of volatile acidity. The tranformed volatile acidity distribution appears normal with the acifuty peaking around 0.25
@@ -160,6 +169,16 @@ summary(wines$fixed.acidity)
 ```
 
 The fixed acidity follow a normal distribution with mean near 6.85 and some outliers over 10. The 50% if the data is between 6.3 and 7.3
+
+A new feature could be obtained using the acidities. Some references says that the total acidity is the amount of fixed acidity plus the volatile acidity. But the measure of fixed acidity should be setted (for an easier understanding) to just tartaric acid and not all the non-volatile acids so our total acidity is going to be the sum of all the acids.
+
+```{r echo=FALSE, Total_acidity}
+wines <- mutate(wines,
+         total.acidity = fixed.acidity + volatile.acidity + citric.acid)
+qplot(total.acidity, data = wines)
+qplot(total.acidity, data = wines, binwidth = 0.1)
+summary(wines$total.acidity)
+```
 
 # Univariate Analysis
 
@@ -245,3 +264,34 @@ The main feature in the data set is the quality. The main idea is try to predict
 ------
 
 # Reflection
+
+# Bibliography
+
+## Feature Knowledge
+
+### acidity
+
+http://www.calwineries.com/learn/wine-chemistry/acidity
+
+### volatile acidity
+
+http://extension.psu.edu/food/enology/wine-production/volatile-acidity-in-wine
+
+### citric acid
+
+http://www.calwineries.com/learn/wine-chemistry/wine-acids/citric-acid
+
+### residual sugar
+
+http://www.calwineries.com/learn/wine-chemistry/sugar-in-wine
+
+### alcohol
+
+http://www.calwineries.com/learn/wine-chemistry/alcohol
+
+# SOme toughts
+
+The higher the sugar, the higher alcohol
+Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols) (tannins just red wines)
+Increase fixed acidity decreases the ph
+Increase citric acid increases ph
