@@ -40,7 +40,8 @@ Mean quality is 5.878, max and min quality are 9 and 3 respectively.
 
 
 ```{r echo=FALSE, Quality}
-qplot(quality, data = wines, binwidth = 1) +
+ggplot(aes(quality), data = wines) +
+  geom_histogram(binwidth = 1, colour="black", fill="white") +
   scale_x_continuous(breaks = seq(3, 9, 1))
 ```
 
@@ -48,7 +49,8 @@ Quality distribution appears unimodal normal distribution with center in 6.
 
 ```{r echo=FALSE, Alcohol}
 qplot(alcohol, data = wines)
-qplot(alcohol, data = wines, binwidth = 0.1) +
+ggplot(aes(alcohol), data = wines) +
+  geom_histogram(binwidth = 0.1, colour="black", fill="white") +
   scale_x_continuous(breaks = seq(8, 15, 0.5))
 
 summary(wines$alcohol)
@@ -58,7 +60,8 @@ Most alcohol values are around 9.5 grades, and follow a right skewed normal dist
 
 ```{r echo=FALSE, Sulphates}
 qplot(sulphates, data = wines)
-qplot(sulphates, data = wines, binwidth = 0.01) +
+ggplot(aes(sulphates), data = wines) +
+  geom_histogram(binwidth = 0.01, colour="black", fill="white") +
   scale_x_continuous(breaks = seq(0.2, 1.1, 0.1))
 
 summary(wines$sulphates)
@@ -68,7 +71,8 @@ Most sulphates values are around 0.45 grades, and follow a right skewed normal d
 
 ```{r echo=FALSE, pH}
 qplot(pH, data = wines)
-qplot(pH, data = wines, binwidth = 0.01) +
+ggplot(aes(x = pH), data = wines) +
+  geom_histogram(binwidth = 0.02, colour="black", fill="white") +
   scale_x_continuous(breaks = seq(2.7, 3.9, 0.1))
 
 summary(wines$pH)
@@ -78,8 +82,9 @@ pH follow a normal distribution with mean near 3.2
 
 ```{r echo=FALSE, Density}
 qplot(density, data = wines)
-qplot(density, data = wines, binwidth = 0.0005) +
-  scale_x_continuous(breaks = seq(0.98, 1.04, 0.01))
+ggplot(aes(x = density), data = wines) +
+  geom_histogram(binwidth = 0.0001, colour="black", fill="white") +
+  scale_x_log10(breaks = seq(0.985,1.005, 0.002), limits = c(0.985,1.005))
 
 summary(wines$density)
 ```
@@ -88,17 +93,20 @@ Density follow a normal distribution with mean in 0.994 and some outliers over 1
 
 ```{r echo=FALSE, Total_sulfur_dioxide}
 qplot(total.sulfur.dioxide, data = wines)
-qplot(total.sulfur.dioxide, data = wines, binwidth = 5)
+ggplot(aes(x = total.sulfur.dioxide), data = wines) +
+  geom_histogram(binwidth = 5, colour="black", fill="white") +
+  scale_x_continuous(breaks = seq(0,275, 25), limits = c(0,275))
 
 summary(wines$total.sulfur.dioxide)
 ```
 
-The total sulfur dioxide follow a normal distribution with mean in 138.4 and some outliers over 300. The 50% if the data is between 108 and 167
+The total sulfur dioxide follow a normal distribution with mean in 138.4 and some outliers over 275. The 50% if the data is between 108 and 167
 
 ```{r echo=FALSE, Free_sulfur_dioxide}
 qplot(free.sulfur.dioxide, data = wines)
-qplot(free.sulfur.dioxide, data = wines, binwidth = 1) +
-  scale_x_continuous(breaks = seq(0, 290, 10))
+ggplot(aes(x = free.sulfur.dioxide), data = wines) +
+  geom_histogram(binwidth = 1, colour="black", fill="white") +
+  scale_x_continuous(breaks = seq(0, 290, 10), limits = c(0,90))
 
 summary(wines$free.sulfur.dioxide)
 ```
@@ -107,7 +115,8 @@ The free sulfur dioxide follow a normal distribution with mean near 35 and some 
 
 ```{r echo=FALSE, Chlorides}
 qplot(chlorides, data = wines)
-qplot(chlorides, data = wines, binwidth = 0.02) +
+ggplot(aes(x = chlorides), data = wines) +
+  geom_histogram(binwidth = 0.02, colour="black", fill="white") +
   scale_x_log10(breaks = c(0.01, 0.015, 0.02, 0.03, 0.05, 0.1, 0.2))
 
 summary(wines$chlorides)
@@ -118,7 +127,8 @@ Almost 50% of chlorides are between 0.036 and 0.05.
 
 ```{r echo=FALSE, Residual_sugar}
 qplot(residual.sugar, data = wines)
-qplot(residual.sugar, data = wines, binwidth = 0.02) +
+ggplot(aes(x = residual.sugar), data = wines) +
+  geom_histogram(binwidth = 0.02, colour="black", fill="white") +
   scale_x_log10(breaks = c(1, 2, 5, 10, 20))
 
 ```
@@ -139,8 +149,9 @@ Sadly there aren't enought cases in SWEET and RARE to consider this feature.
 
 ```{r echo=FALSE, Citric_acid}
 qplot(citric.acid, data = wines)
-qplot(citric.acid, data = wines, binwidth = 0.01) +
-  scale_x_continuous(breaks = seq(0, 1.7, 0.1))
+ggplot(aes(x = citric.acid), data = wines) +
+  geom_histogram(binwidth = 0.01, colour="black", fill="white") +
+  scale_x_continuous(breaks = seq(0, 1.7, 0.1), limits = c(0,0.75))
 
 summary(wines$citric.acid)
 ```
@@ -155,7 +166,8 @@ sort(table(wines$citric.acid), decreasing = T)
 
 ```{r echo=FALSE, Volatile_acidity}
 qplot(volatile.acidity, data = wines)
-qplot(volatile.acidity, data = wines, binwidth = 0.01) +
+ggplot(aes(x = volatile.acidity), data = wines) +
+  geom_histogram(binwidth = 0.01, colour="black", fill="white") +
   scale_x_log10(breaks = seq(0, 1.1, 0.1))
 ```
 
@@ -163,12 +175,14 @@ Transformed the long tail data to better understand the distribution of volatile
 
 ```{r echo=FALSE, Fixed_acidity}
 qplot(fixed.acidity, data = wines)
-qplot(fixed.acidity, data = wines, binwidth = 0.1)
+ggplot(aes(x = fixed.acidity), data = wines) +
+  geom_histogram(binwidth = 0.1, colour="black", fill="white") +
+  scale_x_continuous(breaks = seq(4, 10, 1), limits = c(4,10))
 
 summary(wines$fixed.acidity)
 ```
 
-The fixed acidity follow a normal distribution with mean near 6.85 and some outliers over 10. The 50% if the data is between 6.3 and 7.3
+The fixed acidity follow a normal distribution with mean near 6.85 and some outliers over 10 and under 4. The 50% if the data is between 6.3 and 7.3
 
 A new feature could be obtained using the acidities. Some references says that the total acidity is the amount of fixed acidity plus the volatile acidity. But the measure of fixed acidity should be setted (for an easier understanding) to just tartaric acid and not all the non-volatile acids so our total acidity is going to be the sum of all the acids.
 
@@ -176,7 +190,9 @@ A new feature could be obtained using the acidities. Some references says that t
 wines <- mutate(wines,
          total.acidity = fixed.acidity + volatile.acidity + citric.acid)
 qplot(total.acidity, data = wines)
-qplot(total.acidity, data = wines, binwidth = 0.1)
+ggplot(aes(x = total.acidity), data = wines) +
+  geom_histogram(binwidth = 0.1, colour="black", fill="white") +
+  scale_x_continuous(breaks = seq(4, 11, 1), limits = c(4,11))
 summary(wines$total.acidity)
 ```
 
@@ -194,15 +210,19 @@ Seeing the univariate plots, most of the features follow normal distributions wi
 
 ### What is/are the main feature(s) of interest in your dataset?
 
-The main feature in the data set is the quality. The main idea is try to predict the quality of a wine. To accomplish this issue let see what is the behaviour of the quality with some other features. 
+The main feature in the data set is the quality. The main idea is try to predict the quality of a wine. To accomplish this issue let see what is the behaviour of the quality with some other features.
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
 
+I've learn reviewing some internet articles that a good wine quality is given by this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols). In the case of white wines, the concentration of phenols (tannins, that gives the red color of the wine) are insignificant. So the interesting features for this analysis will be: fixed.acidity, volatile.acidity, citric.acid, total.acidity, residual.sugar, alcohol and quality.
+
 ### Did you create any new variables from existing variables in the dataset?
+
+Total acidity is a combination of all the acids. Also the residual sugar has been categorized but the few quantity of data in some categories made this one useless.
 
 ### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
 
-
+Residual sugar maybe is the most unusual distribution cause for a better understanding of the data a log10 has been applied and appears a bimodal distribution. The rest of them seems to be normal distributions, some of them right skewed.
 
 # Bivariate Plots Section
 ```{r echo=FALSE, Bivariate_Plots}
@@ -272,6 +292,7 @@ The main feature in the data set is the quality. The main idea is try to predict
 ### acidity
 
 http://www.calwineries.com/learn/wine-chemistry/acidity
+http://winemakersacademy.com/understanding-wine-acidity/
 
 ### volatile acidity
 
@@ -289,7 +310,7 @@ http://www.calwineries.com/learn/wine-chemistry/sugar-in-wine
 
 http://www.calwineries.com/learn/wine-chemistry/alcohol
 
-# SOme toughts
+# Some toughts
 
 The higher the sugar, the higher alcohol
 Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols) (tannins just red wines)
