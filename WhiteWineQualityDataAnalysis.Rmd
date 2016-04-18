@@ -16,6 +16,9 @@ output: html_document
 
 library(ggplot2)
 library(dplyr)
+library(psych)
+library(scales)
+library(memisc)
 ```
 
 ```{r echo=FALSE, Load_the_Data}
@@ -206,7 +209,7 @@ All the features are numerical, even the quality that is based on a score of 0 t
 
 Main thoughts:
 
-Seeing the univariate plots, most of the features follow normal distributions with few variability but some outliers. It's going to be interesting how these outliers have influence in the quality of the wines.
+Seeing the univariate plots, most of the features follow normal distributions with few variability but some outliers.
 
 ### What is/are the main feature(s) of interest in your dataset?
 
@@ -214,7 +217,7 @@ The main feature in the data set is the quality. The main idea is try to predict
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
 
-I've learn reviewing some internet articles that a good wine quality is given by this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols). In the case of white wines, the concentration of phenols (tannins, that gives the red color of the wine) are insignificant. So the interesting features for this analysis will be: fixed.acidity, volatile.acidity, citric.acid, total.acidity, residual.sugar, alcohol and quality.
+I've learned, reviewing some internet articles, that a good wine quality is given by this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols). In the case of white wines, the concentration of phenols (tannins, that gives the red color of the wine) are insignificant. So the interesting features for this analysis will be: fixed.acidity, volatile.acidity, citric.acid, total.acidity, residual.sugar, alcohol and quality.
 
 ### Did you create any new variables from existing variables in the dataset?
 
@@ -225,6 +228,36 @@ Total acidity is a combination of all the acids. Also the residual sugar has bee
 Residual sugar maybe is the most unusual distribution cause for a better understanding of the data a log10 has been applied and appears a bimodal distribution. The rest of them seems to be normal distributions, some of them right skewed.
 
 # Bivariate Plots Section
+
+```{r echo=FALSE, Correlation_Matrix}
+cor(wines[, c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14)])
+```
+
+```{r echo=FALSE, Pairs_Panel}
+set.seed(10)
+pairs.panels(wines[, c(4 ,5, 6, 7, 8, 9, 10, 11, 12, 14)], pch=".")
+```
+
+Some unexpected correlations appears in the features.  The density seems to be correlated with the residual sugar and with the alcohol. So lets insclude this one in the investigation features.
+
+```{r echo=FALSE, Correlation_Matrix}
+cor(wines[, c(4, 8, 11, 12, 14)])
+```
+
+```{r echo=FALSE, Pairs_Panel}
+set.seed(10)
+pairs.panels(wines[, c(4, 8, 11, 12, 14)], pch=".")
+```
+
+The main objective is to know how this features affect the wine quality.
+
+```{r echo=FALSE, Price_vs_Carat}
+qplot(x = total.acidity, y = quality, data = wines)
+ggplot(aes(x = total.acidity, y = quality), data = wines) +
+  geom_point(colour="black", fill="white") +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), quantile(wines$total.acidity, .99)))
+```
+
 ```{r echo=FALSE, Bivariate_Plots}
 
 ```
