@@ -41,6 +41,10 @@ About 75% of the wines have a residual sugar value below 10 grams/liter (over 45
 Some wines have not citric acid.
 Mean quality is 5.878, max and min quality are 9 and 3 respectively.
 
+```{r echo=FALSE, factorize quality}
+wines$quality <- ordered(wines$quality, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+```
+
 
 ```{r echo=FALSE, Quality}
 ggplot(aes(quality), data = wines) +
@@ -249,14 +253,66 @@ set.seed(10)
 pairs.panels(wines[, c(4, 8, 11, 12, 14)], pch=".")
 ```
 
-The main objective is to know how this features affect the wine quality.
+The main objective is to know how this features affect the wine quality, but first lest see how others features are related.
 
-```{r echo=FALSE, Price_vs_Carat}
+```{r echo=FALSE, Residual_Sugar_vs_Density}
+ggplot(aes(x = residual.sugar, y = density), data = wines) +
+  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Density by Residual Sugar')
+```
+
+Here is a very strong relationship between the residual sugar and the density of the wine. In fact the correlation is 0.84.
+
+```{r echo=FALSE, Density_vs_Alcohol}
+ggplot(aes(x = density, y = alcohol), data = wines) +
+  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$density, .05),
+                           quantile(wines$density, .95))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Alcohol by density')
+```
+
+
+```{r echo=FALSE, Quality_vs_Total_Acidity}
 qplot(x = total.acidity, y = quality, data = wines)
 ggplot(aes(x = total.acidity, y = quality), data = wines) +
-  geom_point(colour="black", fill="white") +
-  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), quantile(wines$total.acidity, .99)))
+  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
+                           quantile(wines$total.acidity, .99))) +
+  #geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Quality by Total Acidity')
 ```
+
+No relationship can be shown, in fact the correlation value for this pairs is -0.13.
+
+```{r echo=FALSE, Total_Acidity_by_Quality}
+qplot(total.acidity, data = wines, binwidth = .05, fill = quality) +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
+                           quantile(wines$total.acidity, .99))) +
+  guides(fill = guide_legend(reverse = T))
+with(wines, by(residual.sugar, quality, summary))
+```
+
+```{r echo=FALSE, Quality_vs_Residual_Sugar}
+ggplot(aes(x = residual.sugar, y = quality), data = wines) +
+  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
+  #geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Quality by Residual Sugar')
+```
+```{r echo=FALSE, Residual_sugar_by_Quality}
+qplot(residual.sugar, data = wines, binwidth = .1, fill = quality) +
+  coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
+  guides(fill = guide_legend(reverse = T))
+with(wines, by(residual.sugar, quality, summary))
+```
+
+Again any relationship between these features as expected.
+
+Lets look in more detail density and residual sugar.
+
 
 ```{r echo=FALSE, Bivariate_Plots}
 
