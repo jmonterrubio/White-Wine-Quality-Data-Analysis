@@ -41,10 +41,6 @@ About 75% of the wines have a residual sugar value below 10 grams/liter (over 45
 Some wines have not citric acid.
 Mean quality is 5.878, max and min quality are 9 and 3 respectively.
 
-```{r echo=FALSE, factorize quality}
-wines$quality <- ordered(wines$quality, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-```
-
 
 ```{r echo=FALSE, Quality}
 ggplot(aes(quality), data = wines) +
@@ -209,7 +205,11 @@ summary(wines$total.acidity)
 
 There are 4898 wines in the dataset with 12 features (fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol and quality).
 
-All the features are numerical, even the quality that is based on a score of 0 to 10. This feature is the easiest one to be factorized for an easy plot interpretations but the range and the nature of the data seems that is not going to be necessary to factorize.
+All the features are numerical, even the quality that is based on a score of 0 to 10. This feature is the easiest one to be factorized for an easy plot interpretations but we are going to mantain both.
+
+```{r echo=FALSE, Factorize_quality}
+wines$quality.factor <- ordered(wines$quality, levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+```
 
 Main thoughts:
 
@@ -233,11 +233,11 @@ Residual sugar maybe is the most unusual distribution cause for a better underst
 
 # Bivariate Plots Section
 
-```{r echo=FALSE, Correlation_Matrix}
+```{r echo=FALSE, Correlation_Matrix_All}
 cor(wines[, c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14)])
 ```
 
-```{r echo=FALSE, Pairs_Panel}
+```{r echo=FALSE, Pairs_Panel_All}
 set.seed(10)
 pairs.panels(wines[, c(4 ,5, 6, 7, 8, 9, 10, 11, 12, 14)], pch=".")
 ```
@@ -257,7 +257,7 @@ The main objective is to know how this features affect the wine quality, but fir
 
 ```{r echo=FALSE, Residual_Sugar_vs_Density}
 ggplot(aes(x = residual.sugar, y = density), data = wines) +
-  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
+  geom_point(color = I('seagreen'),alpha = 0.5, size = 1, position = 'jitter') +
   coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
   geom_smooth(method = "lm", se = FALSE) +
   ggtitle('Density by Residual Sugar')
@@ -271,9 +271,10 @@ ggplot(aes(x = density, y = alcohol), data = wines) +
   coord_cartesian(xlim = c(quantile(wines$density, .05),
                            quantile(wines$density, .95))) +
   geom_smooth(method = "lm", se = FALSE) +
-  ggtitle('Alcohol by density')
+  ggtitle('Alcohol by Density')
 ```
 
+Also we see a strong relationship between density and alcohol as we could advance with the correlation of -0.78. 
 
 ```{r echo=FALSE, Quality_vs_Total_Acidity}
 qplot(x = total.acidity, y = quality, data = wines)
@@ -288,7 +289,7 @@ ggplot(aes(x = total.acidity, y = quality), data = wines) +
 No relationship can be shown, in fact the correlation value for this pairs is -0.13.
 
 ```{r echo=FALSE, Total_Acidity_by_Quality}
-qplot(total.acidity, data = wines, binwidth = .05, fill = quality) +
+qplot(total.acidity, data = wines, binwidth = .05, fill = quality.factor) +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
                            quantile(wines$total.acidity, .99))) +
   guides(fill = guide_legend(reverse = T))
@@ -303,7 +304,7 @@ ggplot(aes(x = residual.sugar, y = quality), data = wines) +
   ggtitle('Quality by Residual Sugar')
 ```
 ```{r echo=FALSE, Residual_sugar_by_Quality}
-qplot(residual.sugar, data = wines, binwidth = .1, fill = quality) +
+qplot(residual.sugar, data = wines, binwidth = .1, fill = quality.factor) +
   coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
   guides(fill = guide_legend(reverse = T))
 with(wines, by(residual.sugar, quality, summary))
@@ -311,16 +312,29 @@ with(wines, by(residual.sugar, quality, summary))
 
 Again any relationship between these features as expected.
 
-Lets look in more detail density and residual sugar.
-
-
-```{r echo=FALSE, Bivariate_Plots}
-
+```{r echo=FALSE, Quality_vs_Alcohol}
+ggplot(aes(x = alcohol, y = quality), data = wines) +
+  geom_point(color = I('seagreen'), alpha = 0.1, size = 5, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$alcohol, .01),
+                           quantile(wines$alcohol, .99))) +
+  #geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Quality by Alcohol')
+```
+```{r echo=FALSE, Alcohol_by_Quality}
+qplot(alcohol, data = wines, binwidth = .1, fill = quality.factor) +
+  coord_cartesian(xlim = c(quantile(wines$alcohol, .01),
+                           quantile(wines$alcohol, .99))) +
+  guides(fill = guide_legend(reverse = T))
+with(wines, by(alcohol, quality, summary))
 ```
 
 # Bivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+The main relationships in this bivariate analysis are found related with the alcohol feature. We could see that it has a strong relationship with the density and the residual sugar.
+
+But no single relationship could be found with the quality. Each of the features analyzed aren't somehow related with the quality. This is something we can expected because is not that easy to have a good wine quality, isn't it?
 
 ### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
 
