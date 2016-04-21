@@ -282,25 +282,26 @@ ggplot(aes(x = total.acidity, y = quality), data = wines) +
   geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
                            quantile(wines$total.acidity, .99))) +
-  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   ggtitle('Quality by Total Acidity')
 ```
 
-No relationship can be shown, in fact the correlation value for this pairs is -0.13.
+No relationship can be shown, in fact the correlation value for this pairs is -0.13. Seeing the linear model of these features (blue line) we can appreciate almost an horizontal line. This means the slope (total acidity value) has very few importance in this equation. 
 
 ```{r echo=FALSE, Total_Acidity_by_Quality}
 qplot(total.acidity, data = wines, binwidth = .05, fill = quality.factor) +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
                            quantile(wines$total.acidity, .99))) +
   guides(fill = guide_legend(reverse = T))
-with(wines, by(residual.sugar, quality, summary))
+with(wines, by(total.acidity, quality, summary))
+with(wines, by(total.acidity, quality, length))
 ```
 
 ```{r echo=FALSE, Quality_vs_Residual_Sugar}
 ggplot(aes(x = residual.sugar, y = quality), data = wines) +
   geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
   coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
-  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   ggtitle('Quality by Residual Sugar')
 ```
 ```{r echo=FALSE, Residual_sugar_by_Quality}
@@ -310,23 +311,46 @@ qplot(residual.sugar, data = wines, binwidth = .1, fill = quality.factor) +
 with(wines, by(residual.sugar, quality, summary))
 ```
 
-Again any relationship between these features as expected.
+Again any relationship between these features as expected and seeing the linear model of these features we can appreciate almost an horizontal line.
 
 ```{r echo=FALSE, Quality_vs_Alcohol}
 ggplot(aes(x = alcohol, y = quality), data = wines) +
   geom_point(color = I('seagreen'), alpha = 0.1, size = 5, position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$alcohol, .01),
                            quantile(wines$alcohol, .99))) +
-  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   ggtitle('Quality by Alcohol')
 ```
+
 ```{r echo=FALSE, Alcohol_by_Quality}
 qplot(alcohol, data = wines, binwidth = .1, fill = quality.factor) +
   coord_cartesian(xlim = c(quantile(wines$alcohol, .01),
                            quantile(wines$alcohol, .99))) +
   guides(fill = guide_legend(reverse = T))
 with(wines, by(alcohol, quality, summary))
+with(wines, by(alcohol, quality, length))
 ```
+
+Here a small relationship could be seen. It seems for this dataset the quality of wine increases with the alcohol graduation.
+
+```{r echo=FALSE, Quality_vs_Density}
+ggplot(aes(x = density, y = quality), data = wines) +
+  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$density, .01),
+                           quantile(wines$density, .99))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Quality by Density')
+```
+```{r echo=FALSE, Density_by_Quality}
+qplot(density, data = wines, binwidth = .0002, fill = quality.factor) +
+  coord_cartesian(xlim = c(quantile(wines$density, .01),
+                           quantile(wines$density, .99))) +
+  guides(fill = guide_legend(reverse = T))
+with(wines, by(density, quality, summary))
+with(wines, by(density, quality, length))
+```
+
+In this case, it seems to be a small relationship between these features but with a low correlation so not important.
 
 # Bivariate Analysis
 
@@ -334,13 +358,15 @@ with(wines, by(alcohol, quality, summary))
 
 The main relationships in this bivariate analysis are found related with the alcohol feature. We could see that it has a strong relationship with the density and the residual sugar.
 
-But no single relationship could be found with the quality. Each of the features analyzed aren't somehow related with the quality. This is something we can expected because is not that easy to have a good wine quality, isn't it?
+But no single relationship (at leats remarkable) could be found with the quality. Each of the features analyzed aren't somehow related with the quality. This is something we can expected because is not that easy to have a good wine quality, isn't it?
 
 ### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
 
+The most interesting relationships involve the density feature. In fact seeing the correlations between features, density has almost always the highest values.
+
 ### What was the strongest relationship you found?
 
-
+The strongest relationship is between density and residual sugar. A correlation of 0.84 gives us a strong relationship. Also density with alcohol (-0.78) are strongly correlated.
 
 
 # Multivariate Plots Section
