@@ -371,6 +371,14 @@ The strongest relationship is between density and residual sugar. A correlation 
 
 # Multivariate Plots Section
 
+```{r echo=FALSE, Density_by_Alcohol_with_Quality}
+ggplot(aes(x = density, y = alcohol), data = wines, color = quality.factor) +
+  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$density, .01),
+                           quantile(wines$density, .99))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle('Quality by Density')
+```
 ```{r echo=FALSE, Multivariate_Plots}
 
 ```
