@@ -371,16 +371,61 @@ The strongest relationship is between density and residual sugar. A correlation 
 
 # Multivariate Plots Section
 
-```{r echo=FALSE, Density_by_Alcohol_with_Quality}
-ggplot(aes(x = density, y = alcohol), data = wines, color = quality.factor) +
-  geom_point(color = I('seagreen'), alpha = 0.5, size = 1, position = 'jitter') +
+```{r echo=FALSE, Density_vs_Alcohol_by_Quality}
+ggplot(aes(x = density, y = alcohol, colour = quality.factor), data = wines) +
+  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$density, .01),
                            quantile(wines$density, .99))) +
   geom_smooth(method = "lm", se = FALSE) +
-  ggtitle('Quality by Density')
+  facet_wrap(~quality.factor) +
+  ggtitle('Density vs Alcohol by Quality')
 ```
-```{r echo=FALSE, Multivariate_Plots}
 
+Here we can see that with higer quality values density vs alcohol values seems to be in the top left of the graph and with lower values density vs alcohol fall in the left side (always following the lm, that look similar for every wine quality).
+
+```{r echo=FALSE, Density_vs_Residual_Sugar_by_Quality}
+ggplot(aes(x = density, y = residual.sugar, colour = quality.factor), data = wines) +
+  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$density, .01),
+                           quantile(wines$density, .99))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~quality.factor) +
+  ggtitle('Density vs Residual Sugar by Quality')
+```
+These plots shows that the correlation exists for every quality and seems that values goes from right to left in the linear model when the quality increases.
+
+Now lets see the behaviour of the quality vs the other features of interest
+
+```{r echo=FALSE, Quality_vs_Residual_Sugar_by_Alcohol}
+ggplot(aes(x = residual.sugar, y = quality, colour = alcohol), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
+  scale_color_distiller(palette = 'Set1') +
+  ggtitle('Quality vs Residual Sugar by Alcohol')
+```
+
+```{r echo=FALSE, Quality_vs_Alcohol_by_Residual_Sugar}
+ggplot(aes(x = alcohol, y = quality, colour = residual.sugar), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$alcohol, .01), quantile(wines$alcohol, .99))) +
+  scale_color_distiller(palette = 'Set1') +
+  ggtitle('Quality vs Alcohol by Residual Sugar')
+```
+
+```{r echo=FALSE, Quality_vs_Residual_Sugar_and_Alcohol_by_Total_Acidity}
+ggplot(aes(x = alcohol + residual.sugar, y = quality, colour = total.acidity), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$alcohol + wines$residual.sugar, .01), quantile(wines$alcohol + wines$residual.sugar, .99))) +
+  scale_color_distiller(palette = 'Set1') +
+  ggtitle('Quality vs Residual Sugar and Alcohol by Total Acidity')
+```
+
+```{r echo=FALSE, Quality_vs_Total_Acidity_by_Residual_Sugar_and_Alcohol}
+ggplot(aes(x = total.acidity, y = quality, colour = log(alcohol) + log(residual.sugar)), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), quantile(wines$total.acidity, .99))) +
+  scale_color_distiller(palette = 'Set1') +
+  ggtitle('Quality vs Total Acidity by Residual Sugar and Alcohol')
 ```
 
 # Multivariate Analysis
