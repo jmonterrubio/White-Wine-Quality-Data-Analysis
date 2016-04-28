@@ -15,6 +15,7 @@ output: html_document
 # You should set echo=FALSE for all code chunks in your file.
 
 library(ggplot2)
+library(gridExtra)
 library(dplyr)
 library(psych)
 library(scales)
@@ -428,6 +429,15 @@ ggplot(aes(x = total.acidity, y = quality, colour = alcohol + log10(residual.sug
   ggtitle('Quality vs Total Acidity by Log10 Residual Sugar and Alcohol')
 ```
 
+```{r echo=FALSE, Total_Acidity_vs_Residual_Sugar_and_Alcohol_by_Quality}
+ggplot(aes(x = total.acidity, y = alcohol + log10(residual.sugar), colour = quality.factor), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), quantile(wines$total.acidity, .99))) +
+  scale_color_brewer(palette = 'Set1') +
+  facet_wrap(~quality.factor) +
+  ggtitle('Total Acidity vs Log10 Residual Sugar and Alcohol by Quality')
+```
+
 These plots shows how difficult is to obtain a goof quality wine. Very few relationships could be found. In the next section will be explained some thoughts about why this happens.
 
 ```{r echo=FALSE, Build_Linear_Model}
@@ -435,6 +445,7 @@ m1 <- lm(quality ~ total.acidity, data = wines)
 m2 <- update(m1, ~ . + log10(residual.sugar))
 m3 <- update(m2, ~ . + alcohol)
 mtable(m1, m2, m3)
+summary(m3)
 ```
 # Multivariate Analysis
 
@@ -446,40 +457,75 @@ Furthermore, a small relationship appears when mixing total acidity with residua
 
 ### Were there any interesting or surprising interactions between features?
 
-As said before, the most interesting feature is the density, analized with alcohol and residual sugar. No special interaction could be seen in this section.
+As said before, the most interesting feature is the density, analyzed with alcohol and residual sugar. No special interaction could be seen in this section.
 
 ### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+In order to predict the wine quality I created a linear model trying to figure out that the balance of alcohol + sugar and total acidity gives a good wine quality. The model doesn't seem to be very accurate (0.2) event the features used have influence in the model (3 stars in the m3 column). 
 
 ------
 
 # Final Plots and Summary
 
 ### Plot One
-```{r echo=FALSE, Plot_One}
-
+```{r echo=FALSE, message=FALSE, Plot_One}
+ggplot(aes(x = residual.sugar), data = wines) +
+  geom_histogram(binwidth = 0.02, colour="black", fill="white") +
+  scale_x_log10(breaks = c(1, 2, 5, 10, 20)) +
+  ggtitle('Log10 Residual Sugar') +
+  xlab('Residual Sugar (g / dm^3)') + 
+  ylab('Number of Wines')
 ```
 
 ### Description One
-
+The distribution of residual sugar amount appears to be bimodal. This is not easy to explain, maybe a demand of a well differenced wine sweet flavour.
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
+plot1 <- ggplot(aes(x = residual.sugar, y = density), data = wines) +
+  geom_point(color = I('seagreen'),alpha = 0.5, size = 1, position = 'jitter') +
+  scale_x_log10(breaks = c(1, 2, 5, 10, 20)) +
+  geom_smooth(method = 'lm', se = FALSE) +
+  xlab('Residual Sugar (g / dm^3)') +
+  ylab('Density (g / cm^3)') +
+  ggtitle('Log10 Residual Sugar vs Density')
 
+plot2 <- ggplot(aes(x = residual.sugar, y = density, colour = quality.factor), data = wines) +
+  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
+  scale_x_log10(breaks = c(1, 2, 5, 10, 20)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~quality.factor) +
+  xlab('Residual Sugar (g / dm^3)') + 
+  ylab('Density (g / cm^3)') +
+  ggtitle('Log10 Residual Sugar vs Density by Quality')
+
+grid.arrange(plot1, plot2, ncol = 1)
 ```
 
 ### Description Two
-
+Residual sugar is one of the most interesting feature because of its high correlation with others. In this case the relationship with the density is almost linear but trying to figure out if the quality has influence in this relationship don't give us any clue. 
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
-
+ggplot(aes(x = total.acidity, y = quality, colour = alcohol + log10(residual.sugar)), data = wines) +
+  geom_point(position = 'jitter') +
+  coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), quantile(wines$total.acidity, .99))) +
+  scale_color_distiller(palette = 'Set4') +
+  xlab('Total Acidity (g / dm^3)') + 
+  ylab('Quality') +
+  ggtitle('Quality vs Total Acidity by Log10 Residual Sugar and Alcohol')
 ```
 
 ### Description Three
 
+Quality levels have an small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have mess acidity with higher alcohol and residual sugar value.
 ------
 
 # Reflection
+
+The white wines data set contains information on almost 5000 wines. First of all an exploratory data analysis was performed to understand the fearures. Also some internet investigation to contextualize and learn about the topic. This gave me some references about how quality could be calculated/predicted given some of the features already provided in the dataset. Before this some relations call my attention like the high relationship of the density with some other features like alcohol and residual sugar. Finally trying to find any relations to set a good quality was quite frustrating. Some internet investigations direct me to this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids). But the final though wasn't as easy as it seems. I could find a small relationship between this features but looking at the resultant linear model a small qualtity of wines are accounted (20%).
+
+Some conclusions I can extract is that the data set lacks of a more spreaded quality values. Almost all the wines are 'NORMAL' and it's difficult the clusterize. Also I think that my analysis was a bit biased trying to predict the quality given the previous formula.
 
 # Bibliography
 
@@ -506,9 +552,9 @@ http://www.calwineries.com/learn/wine-chemistry/sugar-in-wine
 
 http://www.calwineries.com/learn/wine-chemistry/alcohol
 
-# Some toughts
+# Some thoughts
 
-The higher the sugar, the higher alcohol
-Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols) (tannins just red wines)
-Increase fixed acidity decreases the ph
-Increase citric acid increases ph
+The higher the sugar, the higher alcohol.
+Sweet Taste (sugars + alcohols) <= => Acid Taste (acids) + Bitter Taste (phenols) (tannins just red wines).
+Increase fixed acidity decreases the ph.
+Increase citric acid increases ph.
