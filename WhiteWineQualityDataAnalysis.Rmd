@@ -500,7 +500,11 @@ ggplot(aes(x = residual.sugar), data = wines) +
 ```
 
 ### Description One
-The distribution of residual sugar amount appears to be bimodal. This is not easy to explain, maybe a demand of a well differenced wine sweet flavour.
+The distribution of residual sugar amount appears to be bimodal. This is not easy to explain, maybe a demand of a well differenced wine sweet flavour. However it exists an official category for the sweetness of the wines but the are almost outliers in this data set:
+
+```{r Description sweetness}
+summary(wines$sugar.taste)
+```
 
 ### Plot Two
 ```{r Plot_Two}
@@ -514,7 +518,13 @@ ggplot(aes(x = residual.sugar, y = density), data = wines) +
 ```
 
 ### Description Two
-Residual sugar is one of the most interesting feature because of its high correlation with others. In this case the relationship with the density is almost linear. 
+Residual sugar is one of the most interesting feature because of its high correlation with others. In this case the relationship with the density is almost linear.
+
+```{r Description_Two_Linear_Model}
+m1 <- lm(residual.sugar ~ density, data = wines)
+anova(m1)
+```
+The F is the ratio of two variances, the variance explained by the parameters in the model(88672) and the residual or unexplained variance(8). F value can be interpreted as the bigger it grows, the more unlikely it is that the intercepts do not have any effect at all. So density has a lot of influence in residual sugar and vice versa.
 
 ### Plot Three
 ```{r Plot_Three}
@@ -534,7 +544,12 @@ ggplot(aes(x = total.acidity,
 
 ### Description Three
 
-Quality levels have an small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have mess acidity with higher alcohol and residual sugar value.
+Quality levels have an small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have mess acidity with higher alcohol and residual sugar value. Linear model summary shows also this relationship:
+
+```{r Description_Three_Linear_Model}
+m1 <- lm(quality ~ total.acidity + log10(residual.sugar) + alcohol, data = wines)
+summary(m1)
+```
 
 # Reflection
 
