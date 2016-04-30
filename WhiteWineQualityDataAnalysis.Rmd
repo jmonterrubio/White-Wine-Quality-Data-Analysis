@@ -382,6 +382,7 @@ ggplot(aes(x = density, y = alcohol, color = quality.factor), data = wines) +
                            quantile(wines$density, .99))) +
   geom_smooth(method = "lm", se = FALSE) +
   facet_wrap(~quality.factor) +
+  scale_color_brewer(palette = 'Set4') +
   ggtitle('Quality by Density')
 ```
 
@@ -394,6 +395,7 @@ ggplot(aes(x = density, y = residual.sugar, colour = quality.factor), data = win
                            quantile(wines$density, .99))) +
   geom_smooth(method = "lm", se = FALSE) +
   facet_wrap(~quality.factor) +
+  scale_color_brewer(palette = 'Set4') +
   ggtitle('Density vs Residual Sugar by Quality')
 ```
 
@@ -405,7 +407,7 @@ Now lets see the behaviour of the quality vs the other features of interest
 ggplot(aes(x = residual.sugar, y = quality, colour = alcohol), data = wines) +
   geom_point(position = 'jitter') +
   coord_cartesian(xlim = c(0, quantile(wines$residual.sugar, .95))) +
-  scale_color_distiller(palette = 'Set1') +
+  scale_color_distiller(palette = 'Set4') +
   ggtitle('Quality vs Residual Sugar by Alcohol')
 ```
 
@@ -415,7 +417,7 @@ ggplot(aes(x = alcohol, y = quality, colour = log10(residual.sugar)),
   geom_point(position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$alcohol, .01),
                            quantile(wines$alcohol, .99))) +
-  scale_color_distiller(palette = 'Set1') +
+  scale_color_distiller(palette = 'Set4') +
   ggtitle('Quality vs Alcohol by Log10 Residual Sugar')
 ```
 
@@ -429,7 +431,7 @@ ggplot(aes(x = alcohol + log10(residual.sugar),
                                     .01),
                            quantile(wines$alcohol + log10(wines$residual.sugar),
                                     .99))) +
-  scale_color_distiller(palette = 'Set1') +
+  scale_color_distiller(palette = 'Set4') +
   ggtitle('Quality vs Log10 Residual Sugar and Alcohol by Total Acidity')
 ```
 
@@ -441,7 +443,7 @@ ggplot(aes(x = total.acidity,
   geom_point(position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
                            quantile(wines$total.acidity, .99))) +
-  scale_color_distiller(palette = 'Set1') +
+  scale_color_distiller(palette = 'Set4') +
   ggtitle('Quality vs Total Acidity by Log10 Residual Sugar and Alcohol')
 ```
 
@@ -453,7 +455,7 @@ ggplot(aes(x = total.acidity,
   geom_point(position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01),
                            quantile(wines$total.acidity, .99))) +
-  scale_color_brewer(palette = 'Set1') +
+  scale_color_brewer(palette = 'Set4') +
   facet_wrap(~quality.factor) +
   ggtitle('Total Acidity vs Log10 Residual Sugar and Alcohol by Quality')
 ```
