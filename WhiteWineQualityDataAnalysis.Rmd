@@ -554,9 +554,11 @@ The coefficient of determination is listed as 'Adjusted R-squared' and indicates
 
 # Reflection
 
-The white wines data set contains information on almost 5000 wines. First of all an exploratory data analysis was performed to understand the fearures. Also some internet investigation to contextualize and learn about the topic. This gave me some references about how quality could be calculated/predicted given some of the features already provided in the dataset. Before this some relations call my attention like the high relationship of the density with some other features like alcohol and residual sugar. Finally trying to find any relations to set a good quality was quite frustrating. Some internet investigations direct me to this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids). But the final though wasn't as easy as it seems. I could find a small relationship between this features but looking at the resultant linear model a small qualtity of wines are accounted (20%).
+The white wines data set contains information on almost 5000 wines. First of all an exploratory data analysis was performed to understand the fearures. Also some internet investigation to contextualize and learn about the topic. This gave me some references about how quality could be calculated/predicted given some of the features already provided in the dataset. Before this some relations call my attention like the high relationship of the density with some other features like alcohol and residual sugar. Finally trying to find any relations to set a good quality was quite frustrating. Some internet investigations direct me to this formula: Sweet Taste (sugars + alcohols) <= => Acid Taste (acids). But the final thought wasn't as easy as it seems. I could find a small relationship between this features but looking at the resultant linear model a small qualtity of wines are accounted (21%).
 
 Some conclusions I can extract is that the data set lacks of a more spreaded quality values. Almost all the wines are 'NORMAL' and it's difficult the clusterize. Also I think that my analysis was a bit biased trying to predict the quality given the previous formula.
+
+In a next iteration or further analysis the first thing to come with is the strange peak saw in the citric acid histogram. Another possible way to drive a new analysis is including another features for the final modeling, trying to increase the percent of wines accounted.
 
 # Bibliography
 
