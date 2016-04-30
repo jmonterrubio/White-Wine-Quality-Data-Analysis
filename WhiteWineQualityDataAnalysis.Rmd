@@ -525,7 +525,8 @@ ggplot(aes(x = total.acidity,
   geom_point(position = 'jitter') +
   coord_cartesian(xlim = c(quantile(wines$total.acidity, .01), 
                            quantile(wines$total.acidity, .99))) +
-  scale_color_distiller(palette = 'Set4') +
+  scale_color_distiller(palette = 'Set4',
+                        name="Log10(Residual Sugar) +\nAlcohol(% by volume)") +
   xlab('Total Acidity (g / dm^3)') + 
   ylab('Quality') +
   ggtitle('Quality vs Total Acidity by Log10 Residual Sugar and Alcohol')
