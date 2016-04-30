@@ -544,12 +544,13 @@ ggplot(aes(x = total.acidity,
 
 ### Description Three
 
-Quality levels have an small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have mess acidity with higher alcohol and residual sugar value. Linear model summary shows also this relationship:
+Quality levels have a small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have less acidity with higher alcohol and residual sugar value. Linear model summary shows also this relationship:
 
 ```{r Description_Three_Linear_Model}
 m1 <- lm(quality ~ total.acidity + log10(residual.sugar) + alcohol, data = wines)
 summary(m1)
 ```
+The coefficient of determination is listed as 'Adjusted R-squared' and indicates that 21.01% of the variation in quality can be explained by the three predictors, total acidity, residual sugar and alcohol.
 
 # Reflection
 
