@@ -544,7 +544,6 @@ ggplot(aes(x = total.acidity,
 ### Description Three
 
 Quality levels have an small (lower than expected) relation with the total acidity and the alcohol + residual sugar combination. Higher quality wines seems to have mess acidity with higher alcohol and residual sugar value.
-------
 
 # Reflection
 
