@@ -504,29 +504,17 @@ The distribution of residual sugar amount appears to be bimodal. This is not eas
 
 ### Plot Two
 ```{r Plot_Two}
-plot1 <- ggplot(aes(x = residual.sugar, y = density), data = wines) +
+ggplot(aes(x = residual.sugar, y = density), data = wines) +
   geom_point(color = I('seagreen'),alpha = 0.5, size = 1, position = 'jitter') +
   scale_x_log10(breaks = c(1, 2, 5, 10, 20)) +
   geom_smooth(method = 'lm', se = FALSE) +
   xlab('Residual Sugar (g / dm^3)') +
   ylab('Density (g / cm^3)') +
   ggtitle('Log10 Residual Sugar vs Density')
-
-plot2 <- ggplot(aes(x = residual.sugar, y = density, colour = quality.factor),
-                data = wines) +
-  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
-  scale_x_log10(breaks = c(1, 2, 5, 10, 20)) +
-  geom_smooth(method = "lm", se = FALSE) +
-  facet_wrap(~quality.factor) +
-  xlab('Residual Sugar (g / dm^3)') + 
-  ylab('Density (g / cm^3)') +
-  ggtitle('Log10 Residual Sugar vs Density by Quality')
-
-grid.arrange(plot1, plot2, ncol = 1)
 ```
 
 ### Description Two
-Residual sugar is one of the most interesting feature because of its high correlation with others. In this case the relationship with the density is almost linear but trying to figure out if the quality has influence in this relationship don't give us any clue. 
+Residual sugar is one of the most interesting feature because of its high correlation with others. In this case the relationship with the density is almost linear. 
 
 ### Plot Three
 ```{r Plot_Three}
